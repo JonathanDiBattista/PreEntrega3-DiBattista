@@ -1,92 +1,161 @@
-//Const y let
-const valor = 4000;
-const descuento5 = x => x * 0.95;
-const descuento10 = y => y * 0.9;
-let nombre = prompt("ingrese su nombre.");
-let apellido = prompt ("ingrese su apellido.");
-let mensajeCabaña = "Estas son nuestras cabañas:\n";
-
-// Funcion
-function ingresoDatos(){
-    while(nombre === "" || apellido ===""){
-        alert ("ingresar nombre y apellido para seguir.");
-        nombre = prompt("ingrese su nombre.");
-        apellido = prompt ("ingrese su apellido.");
-    }
-    let saludo = `Bienvenido/a ${nombre} ${apellido} a nuestras cabañas.`;
-    alert(saludo);
-}
-
-ingresoDatos();
-
-//while
-let mensaje = parseInt(prompt("indique que dia del mes desea reservar, recuerde que puede reservar hasta el dia 31 inclusive."));
-while (isNaN(mensaje) || mensaje > 31){
-    if (isNaN(mensaje) || mensaje > 31) {
-        alert("por favor, ingresa un número válido.");
-        mensaje = parseInt(prompt("indique que dia del mes desea reservar, recuerde que puede reservar hasta el dia 31 inclusive"));
-    }
-}
-
-alert(`Su reserva ha sido guardada para el día ${mensaje}.`);
-
-//Switch
-let dias =parseInt(prompt("indique cuantos dias va a reservar, el maximo de dias a reservar es de 8, recorda que reservando 2 dias o mas tenes un descuento del 5% y reservando 4 o mas un descuento de 10%."));
-
-if (dias > 8 ){
-    while(dias > 8 ){
-        alert(`ingrese un numero valido.`);
-        dias =parseInt(prompt("indique cuantos dias va a reservar, el maximo de dias a reservar es de 8, recorda que reservando 2 dias o mas tenes un descuento del 5% y reservando 4 o mas un descuento de 10%."));
-    }
-}
-switch(dias){
-        case 1: 
-            alert (`el precio es de ${valor} por dia`);
-            break;
-        case 2:
-        case 3:
-            alert(`el precio es de ${dias*(descuento5(valor))}`)
-            break;
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-            alert(`el precio es de ${dias*(descuento10(valor))}`)
-            break;
-}
-
-// Objetos y arrays
+// Cabañas
 const cabañas = [
-    {id:1, nombre:"Aloha", descripcion: "cabaña para 2 personas."},
-    {id:2, nombre:"Suico", descripcion: "cabaña para 3 personas."},
-    {id:3, nombre:"Sol", descripcion: "cabaña para 4 personas."},
-    {id:4, nombre:"Luna", descripcion: "cabaña para 5 o mas personas."},
-]
-cabañas.forEach(item=>{
-    mensajeCabaña += `${item.nombre}, ${item.descripcion}\n`
-})
-alert(mensajeCabaña);
+    { id: 1, nombre: "Aloha", descripcion: "cabaña para 2 personas." },
+    { id: 2, nombre: "Suico", descripcion: "cabaña para 3 personas." },
+    { id: 3, nombre: "Sol", descripcion: "cabaña para 4 personas." },
+    { id: 4, nombre: "Luna", descripcion: "cabaña para 5 personas." },
+];
+const formulario = document.querySelector(".form");
+const containerCabanas = document.querySelector(".container-cabanas");
+const valor = 4000;
 
-//Find, While e if
-let reservaCabaña = prompt("indique que cabaña desea reservar.");
-reservaCabaña = reservaCabaña.toLowerCase();
-let cabañaEncontrada = cabañas.find(item => item.nombre.toLowerCase() === reservaCabaña);
+function mostrarCabanas() {
+    for (let i = 0; i < cabañas.length; i++) {
+        let divCabana = document.createElement("DIV");
+        let nombreCabana = document.createElement("P");
+        let descripcionCabana = document.createElement("P");
+        let idCabana = document.createElement("P");
 
-while(!cabañaEncontrada){
-    if(!cabañaEncontrada){
-    alert("Cabaña inexistente. Por favor, vuelva a intentarlo.");
+        let botonAlquilar = document.createElement("BUTTON");
+        botonAlquilar.textContent = "ALQUILAR";
+        botonAlquilar.classList.add("boton-alquilar");
+
+        idCabana.textContent = cabañas[i].id;
+        nombreCabana.textContent = cabañas[i].nombre;
+        descripcionCabana.textContent = cabañas[i].descripcion;
+
+        let infoCabana = [
+            idCabana,
+            nombreCabana,
+            descripcionCabana,
+            botonAlquilar,
+        ];
+
+        infoCabana.forEach((e) => {
+            divCabana.appendChild(e);
+        });
+        divCabana.classList.add("divCabana");
+
+        containerCabanas.appendChild(divCabana);
     }
-    reservaCabaña = prompt("Indique qué cabaña desea reservar.");
-    reservaCabaña = reservaCabaña.toLowerCase();
-    cabañaEncontrada = cabañas.find(item => item.nombre.toLowerCase() === reservaCabaña);
 }
-alert("Cabaña reservada.");
+function alquilarCabana() {
+    let botonesAlquilar = document.querySelectorAll(".boton-alquilar");
 
-//Despedida
-alert(`gracias ${nombre} ${apellido} por reservar en nuestras cabañas, te esperamos!`);
+    botonesAlquilar.forEach((e) => {
+        e.addEventListener("click", () => {
+            containerCabanas.innerHTML = "";
+            alquilarCompra();
+            compra();
+        });
+    });
+}
 
+const botonIngreso = document.getElementById("boton-ingreso");
+const inputIngreso1 = document.querySelector(".input-ingreso1");
+const inputIngreso2 = document.querySelector(".input-ingreso2");
+let nombreUsuario;
+botonIngreso.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (inputIngreso1.value === "" || inputIngreso2.value === "") {
+        alert("Completa todos los campos");
+    } else {
+        formulario.innerHTML = "";
+        nombreUsuario = inputIngreso1.value;
+        mostrarCabanas();
+        alquilarCabana();
+    }
+});
+function alquilarCompra() {
+    localStorage.setItem("Nombre", nombreUsuario);
+    let nombreCompra = localStorage.getItem("Nombre");
+    let parrafoCompra = document.createElement("P");
+    parrafoCompra.textContent = `Hola ${nombreCompra} Elige la cantidad de dias que te vas a hospedar, el maximo de dias a reservar es de 8, recorda que reservando 2 dias o mas tenes un descuento del 5% y reservando 4 o mas un descuento de 10%.`;
 
+    let select = document.createElement("select");
+    select.classList.add("select-dias");
+    let placeholderOption = document.createElement("option");
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true;
+    placeholderOption.text = "Cantidad de dias";
+    select.appendChild(placeholderOption);
+
+    let option1 = document.createElement("option");
+    option1.value = "1";
+    option1.text = "1";
+    let option2 = document.createElement("option");
+    option2.value = "2";
+    option2.text = "2";
+    let option3 = document.createElement("option");
+    option3.value = "3";
+    option3.text = "3";
+    let option4 = document.createElement("option");
+    option4.value = "4";
+    option4.text = "4";
+    let option5 = document.createElement("option");
+    option5.value = "5";
+    option5.text = "5";
+    let option6 = document.createElement("option");
+    option6.value = "6";
+    option6.text = "6";
+    let option7 = document.createElement("option");
+    option7.value = "7";
+    option7.text = "7";
+    let option8 = document.createElement("option");
+    option8.value = "8";
+    option8.text = "8";
+
+    let options = [
+        option1,
+        option2,
+        option3,
+        option4,
+        option5,
+        option6,
+        option7,
+        option8,
+    ];
+    options.forEach((e) => {
+        select.appendChild(e);
+    });
+
+    let containerCompra = document.createElement("div");
+    let buttonComprar = document.createElement("button");
+    buttonComprar.textContent = "COMPRAR";
+    buttonComprar.classList.add("comprar-boton");
+    containerCompra.appendChild(select);
+    containerCompra.appendChild(buttonComprar);
+
+    containerCabanas.appendChild(parrafoCompra);
+    containerCabanas.appendChild(containerCompra);
+}
+
+function compra() {
+    botonCompra = document.querySelector(".comprar-boton");
+    selectDias = document.querySelector(".select-dias");
+    botonCompra.addEventListener("click", () => {
+        diaSeleccionado = selectDias.value;
+        containerCabanas.innerHTML = "";
+        let parrafoCompra = `El valor por dia es de 4000, has seleccionado ${diaSeleccionado} dias, asi que tu valor final es: ${valor*diaSeleccionado}`
+        let pCompra = document.createElement('P');
+        let botonCompra = document.createElement('button');
+
+        botonCompra.textContent = 'COMPRAR';
+        botonCompra.classList.add('boton-alquilar');
+        botonCompra.classList.add('boton-comprar-final');
+
+        pCompra.textContent = parrafoCompra;
+        containerCabanas.appendChild(pCompra);
+        containerCabanas.appendChild(botonCompra)
+
+        let body = document.querySelector('body');
+        let nombre = localStorage.getItem('Nombre');
+        botonCompra.addEventListener('click',()=>{
+            body.innerHTML = '';
+            alert(`Gracias ${nombre} por reservar tu estadia`);
+        })
+    });
+}
 
 
 
