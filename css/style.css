@@ -96,3 +96,20 @@ input{
 .comprar-boton:hover{
     cursor: pointer;
 }
+#comments h2{
+    color: white;
+    margin: 0;
+}
+.comments{
+    display: flex;
+    flex-direction:  column;
+    gap: 1rem;
+    margin-bottom: 5rem;
+}
+.titleComment{
+    color: rgba(255, 255, 255, 0.514);
+}
+.descriptionComment{
+    margin: 0;
+    color: rgba(255, 255, 255, 0.322);
+}
